@@ -56,9 +56,9 @@ const App = () => {
   }
 
   // eslint-disable-next-line no-unused-vars
-  let data = []
+  // let data = []
   const blogsToShow = showAll
-    ? data = Array.from(blogs)
+    ? blogs// = Array.from(blogs)
     : blogs.filter(blog => blog.title.toLowerCase().includes(titleToFind.toLowerCase()))
 
   const rows = () => blogsToShow.map(data =>
