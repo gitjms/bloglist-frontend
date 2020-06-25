@@ -1,3 +1,22 @@
+h1 {
+  margin-left: 5px;
+}
+
+li {
+  height: 60px;
+  text-align: center;
+}
+
+strong {
+  float: left;
+  font-size: 25px;
+  text-align: left;
+}
+
+#listbtn {
+  float: right;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
