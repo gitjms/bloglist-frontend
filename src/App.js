@@ -56,9 +56,9 @@ const App = () => {
   }
 
   // eslint-disable-next-line no-unused-vars
-  // let data = []
+  let data = []
   const blogsToShow = showAll
-    ? blogs// = Array.from(blogs)
+    ? data = Array.from(blogs)
     : blogs.filter(blog => blog.title.toLowerCase().includes(titleToFind.toLowerCase()))
 
   const rows = () => blogsToShow.map(data =>
@@ -174,7 +174,7 @@ const App = () => {
   return (
   <>
 	  <nav id='nav' className='navbar navbar-light bg-light'>
-      <img src='/logo.png' width='50' height='35' className='d-inline-block align-top' alt=''/>
+      {/* <img src='/logo.png' width='50' height='35' className='d-inline-block align-top' alt=''/> */}
       <strong>Bloglist</strong>
       <a role='button' className='btn btn-outline-primary' href='/info'>Info</a>
     </nav>

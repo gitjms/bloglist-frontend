@@ -1,6 +1,16 @@
 {
-  "title": "blogi",
-  "author": "joku",
-  "url": "http://jaajaajoo.com",
-  "likes": 1
+  "blogs": [
+    {
+      "title": "Jonkun blogi",
+      "author": "Joku",
+      "url": "http://jaajaajoo.com",
+      "likes": 1
+    },
+    {
+      "title": "Jaskan blogi",
+      "author": "Jaska",
+      "url": "http://jaskajaskajosko.com",
+      "likes": 10
+    }
+  ]
 }
