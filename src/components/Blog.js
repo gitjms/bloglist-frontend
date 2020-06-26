@@ -12,6 +12,7 @@ const Blog = ({values,deleteBlog}) => {
         {values.url}
         <span style={{margin: '5px'}} />
         {values.likes}
+        <span style={{margin: '5px'}} />
         <button type='button' className='btn btn-warning' id='listbtn' style={{marginLeft: '5px'}} onClick={deleteBlog}>delete</button>
       </li>
     </div>
