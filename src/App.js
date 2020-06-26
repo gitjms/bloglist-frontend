@@ -13,7 +13,7 @@ const App = () => {
   const [ newTitle, setNewTitle ] = useState('')
   const [ newAuthor, setNewAuthor ] = useState('')
   const [ newUrl, setNewUrl ] = useState('')
-  const [ newLikes, setNewLikes ] = useState('')
+  const [ newLikes, setNewLikes ] = useState(0)
   const [ showAll, setShowAll ] = useState(true)
   const [ titleToFind, setShowTitleToFind ] = useState('')
   const [ errorMessage, setErrorMessage ] = useState(null)
@@ -91,7 +91,7 @@ const App = () => {
         setNewTitle('')
         setNewAuthor('')
         setNewUrl('')
-        setNewLikes('')
+        setNewLikes(0)
         setMessage(
           `Added ${titleObject.title}`
         )
