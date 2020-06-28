@@ -5,33 +5,33 @@ const BlogForm = ({addBlog,newTitle,handleTitleChange,newAuthor,handleAuthorChan
         <div className="col-auto">
         <form onSubmit={addBlog}>
             <div align="left" className="form-group">
-                <label htmlFor="title">title:</label>
+                <label id="formlabel" htmlFor="title">title:</label>
                 <input id="title" type="text" className="form-control"
                     value={newTitle}
                     onChange={handleTitleChange}
                 />
             </div>
             <div align="left" className="form-group">
-                <label htmlFor="author">author:</label>
+                <label id="formlabel" htmlFor="author">author:</label>
                 <input id="author" type="text" className="form-control"
                     value={newAuthor}
                     onChange={handleAuthorChange}
                 />
             </div>
             <div align="left" className="form-group">
-                <label htmlFor="url">url:</label>
+                <label id="formlabel" htmlFor="url">url:</label>
                 <input id="url" type="text" className="form-control"
                     value={newUrl}
                     onChange={handleUrlChange}
                 />
             </div>
-            <div align="left" className="form-group">
-                <label htmlFor="likes">likes:</label>
+            {/* <div align="left" className="form-group">
+                <label id="formlabel" htmlFor="likes">likes:</label>
                 <input id="likes" type="text" className="form-control"
                     value={newLikes}
                     onChange={handleLikesChange}
                 />
-            </div>
+            </div> */}
             <div align="left" className="form-group">
                 <button className="btn btn-primary"
                     type="submit"

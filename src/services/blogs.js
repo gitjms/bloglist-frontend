@@ -20,6 +20,12 @@ const update = async (id, newObject) => {
   return response.data
 }
 
+// const apdate = async (id, newObject) => {
+//   const request = axios.patch(`${baseUrl}/${id}`, newObject)
+//   const response = await request
+//   return response.data
+// }
+
 const remove = async id => {
   const request = axios.delete(`${baseUrl}/${id}`)
   const response = await request

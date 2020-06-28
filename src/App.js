@@ -23,10 +23,21 @@ const App = () => {
     blogService
       .getAll()
       .then(initialBlogs => {
-        console.log(initialBlogs)
         setBlogs(initialBlogs)
       })
   }, [])
+
+  const Scroll = require('react-scroll')
+  const scroller = Scroll.animateScroll
+  const scrollToElem = () => {
+    scroller.scrollTo('myScrollToElement', {
+      duration: 500,
+      delay: 50,
+      smooth: true,
+      containerId: 'ContainerElementID',
+      offset: 50, // Scrolls to element + 50 pixels down the page
+    })
+  }
 
   const handleTitleChange = (event) => {
     setNewTitle(event.target.value)
@@ -65,8 +76,9 @@ const App = () => {
     <Blog
       key={data.title}
       values={data}
+      likeBlog={() => likeBlogOf(data.id)}
+      replaceTitle={() => replaceTitleOf(data.id)}
       deleteBlog={() => deleteBlogOf(data.id)}
-      replaceTitle={() => replaceTitleOf(data.title,data.author,data.url,data.likes)}
     />
   )
 
@@ -79,9 +91,9 @@ const App = () => {
       likes: newLikes,
     }
   
-    const mapTitles = blogs.map(blog => blog.title.toLowerCase())
+    const mapUrls = blogs.map(blog => blog.url.toLowerCase())
       
-    if (mapTitles.includes(titleObject.title.toLowerCase())) {
+    if (mapUrls.includes(titleObject.url.toLowerCase())) {
       replaceTitleOf(titleObject)
     } else {
       blogService
@@ -99,9 +111,9 @@ const App = () => {
           setMessage(null)
         }, 4000)
       })
-      .catch(error => {
+      .catch((error) => {
         setErrorMessage(
-          console.log(error.response.data)
+          `fields title, author, and url are required`
         )
         setTimeout(() => {
           setErrorMessage(null)
@@ -110,15 +122,22 @@ const App = () => {
     }
   }
 
-  const replaceTitleOf = (blogId) => {
-    const blog = blogs.find(n => n.title === blogId.title)
-    const changedBlog = { ...blog, title: blogId.title }
-    const askConfirm = `${blog.title} is already added to
-      bloglist, replace the old title with a new one?`
+  const replaceTitleOf = id => {
+    const blog = blogs.find(n => n.id === id)
+    const changedBlog = { ...blog, title: newTitle }
+    const askConfirm = `replace the old title with a new one?`
 
-     if (window.confirm(askConfirm)) {
+    if (!newTitle) {
+      scrollToElem()
+        setErrorMessage(
+          `Set new title in the field \`title\``
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 4000)
+    } else if (window.confirm(askConfirm)) {
       blogService
-      .update(blog.id, changedBlog)
+      .update(id, changedBlog)
       .then(returnedBlog => {
         setBlogs(blogs.map(
           oldblog => oldblog.title !== blog.title
@@ -126,16 +145,18 @@ const App = () => {
             : returnedBlog
           )
         )
+        scroller.scrollToTop()
         setMessage(
-          `Changed blog title of ${blog.title}`
+          `Changed blog title of \`${blog.title}\` to \`${newTitle}\``
         )
         setTimeout(() => {
           setMessage(null)
         }, 4000)
       })
       .catch(error => {
+        scroller.scrollToTop()
         setErrorMessage(
-          `Information of ${blog.title} has already been removed from server`
+          `Something went wrong: \`${error.data}\``
         )
         setTimeout(() => {
           setErrorMessage(null)
@@ -145,24 +166,52 @@ const App = () => {
      }
   }
 
+  const likeBlogOf = id => {
+    const blog = blogs.find(n => n.id === id)
+    const changedBlog = { ...blog, likes: blog.likes + 1 }
+    
+    blogService
+    .update(blog.id, changedBlog)
+    .then(returnedBlog => {
+      setBlogs(blogs.map(
+        oldblog => oldblog.likes !== blog.likes
+          ? oldblog
+          : returnedBlog
+        )
+      )
+    })
+    .catch(error => {
+      scroller.scrollToTop()
+      setErrorMessage(
+        `Something went wrong: \`${error.data}\``
+      )
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 4000)
+      setBlogs(blogs.filter(n => n.id !== blog.id))
+    })
+  }
+
   const deleteBlogOf = id => {
     const blog = blogs.find(n => n.id === id)
     
-     if (window.confirm(`Delete ${blog.title}?`)) {
+     if (window.confirm(`Delete \`${blog.title}\`?`)) {
       blogService
       .remove(id, blog)
       .then(() => {
         setBlogs(blogs.filter(n => n.id !== id))
+        scroller.scrollToTop()
         setMessage(
-          `Deleted ${blog.title}`
+          `Deleted \`${blog.title}\``
         )
         setTimeout(() => {
           setMessage(null)
         }, 4000)
       })
       .catch(error => {
+        scroller.scrollToTop()
         setErrorMessage(
-          `Information of ${blog.title} has already been removed from server`
+          `Information of \`${blog.title}\` has already been removed from server`
         )
         setTimeout(() => {
           setErrorMessage(null)
@@ -170,6 +219,7 @@ const App = () => {
       })
      }
   }
+
 
   return (
   <>
@@ -192,7 +242,7 @@ const App = () => {
       <br />
       <div className='col-auto'>
         <b>Add new blog</b>
-        <BlogForm
+        <BlogForm name='myScrollToElement'
           addBlog={addBlog}
           newTitle={newTitle}
           handleTitleChange={handleTitleChange}
