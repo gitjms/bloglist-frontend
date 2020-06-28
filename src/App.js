@@ -162,7 +162,7 @@ const App = () => {
       .catch(error => {
         scroller.scrollToTop()
         setErrorMessage(
-          `Something went wrong: \`${error.data}\``
+          `Something went wrong`
         )
         setTimeout(() => {
           setErrorMessage(null)
