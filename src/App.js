@@ -94,7 +94,13 @@ const App = () => {
     const mapUrls = blogs.map(blog => blog.url.toLowerCase())
       
     if (mapUrls.includes(titleObject.url.toLowerCase())) {
-      replaceTitleOf(titleObject)
+      setErrorMessage(
+        `\`Url\` should be unique`
+      )
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 4000)
+      setNewUrl('')
     } else {
       blogService
       .create(titleObject)
@@ -113,7 +119,7 @@ const App = () => {
       })
       .catch((error) => {
         setErrorMessage(
-          `fields title, author, and url are required`
+          `all fields are required`
         )
         setTimeout(() => {
           setErrorMessage(null)

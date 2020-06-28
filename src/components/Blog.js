@@ -1,7 +1,7 @@
 import React from 'react'
 
 
-const Blog = ({values,likeBlog,replaceTitle,deleteBlog,errorMessage}) => {
+const Blog = ({values,likeBlog,replaceTitle,deleteBlog}) => {
 
   return (
     <div className='list-group'>
