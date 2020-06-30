@@ -5,6 +5,8 @@ import blogService from './services/blogs'
 import Blog from './components/Blog'
 import Blogs from './components/Blogs'
 import Filter from './components/Filter'
+import loginService from './services/login'
+import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Footer from './components/Footer'
 
@@ -18,6 +20,10 @@ const App = () => {
   const [ titleToFind, setShowTitleToFind ] = useState('')
   const [ errorMessage, setErrorMessage ] = useState(null)
   const [ message, setMessage ] = useState(null)
+  const [ loginVisible, setLoginVisible ] = useState(false)
+  const [ username, setUsername ] = useState('') 
+  const [ password, setPassword ] = useState('') 
+  const [ user, setUser ] = useState(null)
 
   useEffect(() => {
     blogService
@@ -26,6 +32,50 @@ const App = () => {
         setBlogs(initialBlogs)
       })
   }, [])
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBloglistappUser')
+    if (loggedUserJSON !== null) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  }, [])
+
+  const handleLogin = async (event) => {
+    event.preventDefault()
+    try {
+      const user = await loginService.login({ username, password })
+      window.localStorage.setItem(
+        'loggedBloglistappUser', JSON.stringify(user)
+      )
+      blogService.setToken(user.token)
+      setUser(user)
+      setUsername('')
+      setPassword('')
+    } catch (exception) {
+      setErrorMessage('wrong username or password')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 4000)
+    }
+  }
+
+  const handleLogout = async (event) => {
+    event.preventDefault()
+    try {
+      setUsername('')
+      setPassword('')
+      setUser(null)
+      window.localStorage.clear()
+    } catch (exception) {
+      setErrorMessage(`${exception}`)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 4000)
+    }
+    console.log('logged out successfully')
+  }
 
   const Scroll = require('react-scroll')
   const scroller = Scroll.animateScroll
@@ -39,29 +89,15 @@ const App = () => {
     })
   }
 
-  const handleTitleChange = (event) => {
-    setNewTitle(event.target.value)
-  }
-
-  const handleAuthorChange = (event) => {
-    setNewAuthor(event.target.value)
-  }
-
-  const handleUrlChange = (event) => {
-    setNewUrl(event.target.value)
-  }
-
-  const handleLikesChange = (event) => {
-    setNewLikes(event.target.value)
-  }
-
-  const handleFindTitleChange = (event) => {
-    setShowTitleToFind(event.target.value)
-  }
-
+  const handleTitleChange = (event) => { setNewTitle(event.target.value) }
+  const handleAuthorChange = (event) => { setNewAuthor(event.target.value) }
+  const handleUrlChange = (event) => { setNewUrl(event.target.value) }
+  const handleLikesChange = (event) => { setNewLikes(event.target.value) }
+  const handleFindTitleChange = (event) => { setShowTitleToFind(event.target.value) }
+  const handleLoginVisibility = (event) => { setLoginVisible(event) }
   const setTitleToFind = (event) => {
     event.preventDefault()
-    if (titleToFind!==''){
+    if (titleToFind!=='') {
       setShowAll(false)
     }
   }
@@ -72,13 +108,13 @@ const App = () => {
     ? data = Array.from(blogs)
     : blogs.filter(blog => blog.title.toLowerCase().includes(titleToFind.toLowerCase()))
 
-  const rows = () => blogsToShow.map(data =>
+  const rows = () => blogsToShow.map(blog =>
     <Blog
-      key={data.title}
-      values={data}
-      likeBlog={() => likeBlogOf(data.id)}
-      replaceTitle={() => replaceTitleOf(data.id)}
-      deleteBlog={() => deleteBlogOf(data.id)}
+      key={blog.id}
+      values={blog}
+      likeBlog={() => likeBlogOf(blog.id)}
+      replaceTitle={() => replaceTitleOf(blog.id)}
+      deleteBlog={() => deleteBlogOf(blog.id)}
     />
   )
 
@@ -95,7 +131,7 @@ const App = () => {
       
     if (mapUrls.includes(titleObject.url.toLowerCase())) {
       setErrorMessage(
-        `\`Url\` should be unique`
+        `\`url\` should be unique`
       )
       setTimeout(() => {
         setErrorMessage(null)
@@ -111,7 +147,7 @@ const App = () => {
         setNewUrl('')
         setNewLikes(0)
         setMessage(
-          `Added ${titleObject.title}`
+          `added ${titleObject.title} by ${titleObject.author}`
         )
         setTimeout(() => {
           setMessage(null)
@@ -136,7 +172,7 @@ const App = () => {
     if (!newTitle) {
       scrollToElem()
         setErrorMessage(
-          `Set new title in the field \`title\``
+          `set new title in the field \`title\``
         )
         setTimeout(() => {
           setErrorMessage(null)
@@ -153,7 +189,7 @@ const App = () => {
         )
         scroller.scrollToTop()
         setMessage(
-          `Changed blog title of \`${blog.title}\` to \`${newTitle}\``
+          `changed blog title of \`${blog.title}\` to \`${newTitle}\``
         )
         setTimeout(() => {
           setMessage(null)
@@ -161,9 +197,7 @@ const App = () => {
       })
       .catch(error => {
         scroller.scrollToTop()
-        setErrorMessage(
-          `Something went wrong`
-        )
+        setErrorMessage(`${error}`)
         setTimeout(() => {
           setErrorMessage(null)
         }, 4000)
@@ -188,9 +222,7 @@ const App = () => {
     })
     .catch(error => {
       scroller.scrollToTop()
-      setErrorMessage(
-        `Something went wrong: \`${error.data}\``
-      )
+      setErrorMessage(`${error}`)
       setTimeout(() => {
         setErrorMessage(null)
       }, 4000)
@@ -208,7 +240,7 @@ const App = () => {
         setBlogs(blogs.filter(n => n.id !== id))
         scroller.scrollToTop()
         setMessage(
-          `Deleted \`${blog.title}\``
+          `deleted \`${blog.title}\``
         )
         setTimeout(() => {
           setMessage(null)
@@ -216,9 +248,7 @@ const App = () => {
       })
       .catch(error => {
         scroller.scrollToTop()
-        setErrorMessage(
-          `Information of \`${blog.title}\` has already been removed from server`
-        )
+        setErrorMessage(`${error}`)
         setTimeout(() => {
           setErrorMessage(null)
         }, 4000)
@@ -226,45 +256,70 @@ const App = () => {
      }
   }
 
+  const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+  const showWhenVisible = { display: loginVisible ? '' : 'none' }
 
   return (
   <>
 	  <nav id='nav' className='navbar navbar-light bg-light'>
       {/* <img src='/logo.png' width='50' height='35' className='d-inline-block align-top' alt=''/> */}
       <strong>Bloglist</strong>
-      <a role='button' className='btn btn-outline-primary' href='/info'>Info</a>
-    </nav>
-    <div className='container'>
-      <br />
-      <div className='col-auto'>
-        <Filter 
-          setTitleToFind={setTitleToFind}
-          titleToFind={titleToFind}
-          handleFindTitleChange={handleFindTitleChange}
-        />
+      
+      {user === null ?
+        <div className='col-auto' style={hideWhenVisible}>
+          <div align='left' className='form-group'>
+            <button className='btn btn-primary' type='submit'
+              onClick={() => handleLoginVisibility(true)}>sign in</button>
+          </div>
+        </div>
+      :
+      <div className='col-auto' style={hideWhenVisible}>
+        {user.name} logged in
+        <button className='btn btn-primary ml-2' type='submit' onClick={handleLogout}>
+          Logout
+        </button>
       </div>
+      }
+    </nav>
+
+    <div className='container'>
       <Message message={message} />
       <ErrorMessage message={errorMessage} />
-      <br />
-      <div className='col-auto'>
-        <b>Add new blog</b>
-        <BlogForm name='myScrollToElement'
-          addBlog={addBlog}
-          newTitle={newTitle}
-          handleTitleChange={handleTitleChange}
-          newAuthor={newAuthor}
-          handleAuthorChange={handleAuthorChange}
-          newUrl={newUrl}
-          handleUrlChange={handleUrlChange}
-          newLikes={newLikes}
-          handleLikesChange={handleLikesChange}
+      <div style={showWhenVisible}>
+        <br />
+        <LoginForm name='myScrollToElement'
+          handleLoginVisibility={handleLoginVisibility}
+          loginVisible={loginVisible}
+          username={username}
+          setUsername={setUsername}
+          password={password}
+          setPassword={setPassword}
+          handleLogin={handleLogin}
         />
       </div>
-      <br />
-      <div className='col-auto'>
-        <b>Blogs</b>
-        <Blogs rows={rows()}/>
-      </div>
+        {user !== null &&
+          <>
+            <br />
+            <Filter 
+              setTitleToFind={setTitleToFind}
+              titleToFind={titleToFind}
+              handleFindTitleChange={handleFindTitleChange}
+            />
+            <BlogForm name='myScrollToElement'
+              addBlog={addBlog}
+              newTitle={newTitle}
+              handleTitleChange={handleTitleChange}
+              newAuthor={newAuthor}
+              handleAuthorChange={handleAuthorChange}
+              newUrl={newUrl}
+              handleUrlChange={handleUrlChange}
+              newLikes={newLikes}
+              handleLikesChange={handleLikesChange}
+            />
+            <br />
+            <Blogs rows={rows()}/>
+          </>
+        }
     <Footer />
     </div>
   </>

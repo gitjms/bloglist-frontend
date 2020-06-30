@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Filter = ({setTitleToFind,titleToFind,handleFindTitleChange}) => {
+const Filter = ({titleToFind,setTitleToFind,handleFindTitleChange}) => {
     return (
         <form onChange={setTitleToFind}>
             <div align="left">
