@@ -1,10 +1,32 @@
-import React from 'react'
+import React, {useState} from 'react'
 
-const BlogForm = ({addBlog,newTitle,handleTitleChange,newAuthor,handleAuthorChange,newUrl,handleUrlChange,newLikes,handleLikesChange,replaceTitle}) => {
+const BlogForm = ({ createBlog }) => {
+
+    const [ newTitle, setNewTitle ] = useState('')
+    const [ newAuthor, setNewAuthor ] = useState('')
+    const [ newUrl, setNewUrl ] = useState('')
+
+    const handleTitleChange = (event) => { setNewTitle(event.target.value) }
+    const handleAuthorChange = (event) => { setNewAuthor(event.target.value) }
+    const handleUrlChange = (event) => { setNewUrl(event.target.value) }
+
+    const addBlog = (event) => {
+        event.preventDefault()
+        createBlog = ({
+            title: newTitle,
+            author: newAuthor,
+            url: newUrl
+        })
+
+        setNewTitle('')
+        setNewAuthor('')
+        setNewUrl('')
+    }
+
     return (
-        <div className='col-auto'>
+        <div className='col-auto' id='formbox'>
         <br />
-        <b>Add new blog</b>
+        <b>Add a new blog</b>
         <form onSubmit={addBlog}>
             <div align='left' className='form-group'>
                 <label id='formlabel' htmlFor='title'>title:</label>
@@ -27,15 +49,8 @@ const BlogForm = ({addBlog,newTitle,handleTitleChange,newAuthor,handleAuthorChan
                     onChange={handleUrlChange}
                 />
             </div>
-            {/* <div align='left' className='form-group'>
-                <label id='formlabel' htmlFor='likes'>likes:</label>
-                <input id='likes' type='text' className='form-control'
-                    value={newLikes}
-                    onChange={handleLikesChange}
-                />
-            </div> */}
             <div align='left' className='form-group'>
-                <button className='btn btn-primary' type='submit' onClick={replaceTitle}>
+                <button className='btn btn-primary' type='submit' style={{float: "left"}}>
                     add
                 </button>
             </div>
