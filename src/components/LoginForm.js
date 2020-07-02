@@ -1,20 +1,31 @@
-import React from 'react'
+import React, {useState} from 'react'
 
 
-const LoginForm = ({
-  handleVisibility,
-  username,
-  handleUsernameChange,
-  password,
-  handlePasswordChange,
-  handleLogin}) => {
+const LoginForm = ({ loginUser }) => {
+
+  const [ username, setUsername ] = useState('') 
+  const [ password, setPassword ] = useState('') 
+
+  const handleUsernameChange = (event) => { setUsername(event.target.value) }
+  const handlePasswordChange = (event) => { setPassword(event.target.value) }
+  
+  const handleLogin = (event) => {
+    event.preventDefault()
+    loginUser({
+      username: username,
+      password: password
+    })
+
+    setUsername('')
+    setPassword('')
+  }
 
   return (
     <div className='form-group-inline'>
       <form onSubmit={handleLogin}>
         <div align='left' className='form-group-inline'>
           <label id='formlabel' htmlFor='username'>username:</label>
-          <input autoFocus id='username' type='text' className='form-control' name='Username'
+          <input id='username' type='text' className='form-control' name='Username'
             value={username}
             onChange={handleUsernameChange}
           />
@@ -24,8 +35,7 @@ const LoginForm = ({
             onChange={handlePasswordChange}
           />
         </div>
-        <button className='btn btn-primary' type='submit' style={{float: "left"}}
-          onClick={handleVisibility}>login</button>
+        <button className='btn btn-primary' type='submit' style={{float: "left"}}>login</button>
       </form>
     </div>
   )

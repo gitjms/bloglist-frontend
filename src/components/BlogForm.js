@@ -12,7 +12,7 @@ const BlogForm = ({ createBlog }) => {
 
     const addBlog = (event) => {
         event.preventDefault()
-        createBlog = ({
+        createBlog({
             title: newTitle,
             author: newAuthor,
             url: newUrl
@@ -24,7 +24,7 @@ const BlogForm = ({ createBlog }) => {
     }
 
     return (
-        <div className='col-auto' id='formbox'>
+        <div className='col-auto' id='boxed'>
         <br />
         <b>Add a new blog</b>
         <form onSubmit={addBlog}>
@@ -50,7 +50,7 @@ const BlogForm = ({ createBlog }) => {
                 />
             </div>
             <div align='left' className='form-group'>
-                <button className='btn btn-primary' type='submit' style={{float: "left"}}>
+                <button className='btn btn-primary' type='submit' style={{float: 'left', marginTop: '12px'}}>
                     add
                 </button>
             </div>

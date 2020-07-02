@@ -1,27 +1,74 @@
-import React from 'react'
+import React, {useState} from 'react'
 
 
-const Blog = ({values,likeBlog,deleteBlog}) => {
+const Blog = ({ user,blog,likeBlog,deleteBlog }) => {
+
+  const [visible, setVisible] = useState(false)
+
+  const hideWhenVisible = { display: visible ? 'none' : '' }
+  const showWhenVisible = { display: visible ? '' : 'none' }
 
   return (
-    <div className='list-group'>
-      <li className='list-group-item list-group-item-action'>
-        {values.title}
-        <span style={{margin: '5px'}} />
-        {values.author}
-        <span style={{margin: '5px'}} />
-        {values.url}
-        <span style={{margin: '5px'}} />
+    <>
+    <div style={hideWhenVisible} id='boxed'>
+      <li className='list-group-item'>
+        <table>
+        <tbody>
+          <tr>
+          <td style={{width: '400px'}}><em><a href={blog.url}>{blog.title}</a></em>
+          <em>{blog.author}</em></td>
+          <td style={{width: '50px'}}><button type='button' className='btn btn-primary'
+          onClick={() => setVisible(true)}>view</button>
+          </td>
+          </tr>
+        </tbody>
+        </table>
       </li>
-      <div className='form d-flex justify-content-between'>
-        <div>
-          <span style={{margin: '10px'}} />
-          Likes: {values.likes}
-          <button type='button' className='btn btn-success' id='listbtnlike' style={{marginLeft: '5px'}} onClick={likeBlog}>+1</button>
-        </div>
-          <button type='button' className='btn btn-warning' id='listbtn' style={{float: 'right'}} onClick={deleteBlog}>delete</button>
-      </div>
     </div>
+    <div style={showWhenVisible} id='boxed'>
+      <li className='list-group-item'>
+        <table>
+        <tbody>
+          <tr>
+          <td style={{width: '400px'}}><em><a href={blog.url}>{blog.title}</a></em>
+          <em>{blog.author}</em></td>
+          <td style={{width: '50px'}}><button type='button' className='btn btn-primary'
+          onClick={() => setVisible(false)}>hide</button>
+          </td>
+          </tr>
+        </tbody>
+        </table>
+      </li>
+      <li className='list-group-item'>
+        {blog.url}
+      </li>
+      <li className='list-group-item'>
+        <div>
+          Likes: {blog.likes}
+          <button type='button' className='btn btn-success' id='listbtnlike'
+            style={{paddingLeft: '10px', width: '60px', marginLeft: '10px'}}
+            onClick={likeBlog}>+1</button>
+        </div>
+      </li>
+      <li className='list-group-item'>
+        <table>
+        <tbody>
+          <tr>
+          <td style={{width: '390px'}}>
+          {blog.user.name}
+          </td>
+          {user.name === blog.user.name &&
+            <td style={{width: '60px'}}>
+            <button type='button' className='btn btn-warning'
+              onClick={deleteBlog}>delete</button>
+            </td>
+          }
+          </tr>
+        </tbody>
+        </table>
+      </li>
+    </div>
+    </>
   )
 }
 
