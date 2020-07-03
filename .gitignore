@@ -7,4 +7,6 @@
 # misc
 .DS_Store
 .env
-
+npm-project.txt
+serviceWorker.js
+setupTests.js

@@ -8,7 +8,7 @@ strong {
   text-align: left;
 }
 
-#listbtnlike {
+#like-button {
   font-size: 18px;
 }
 
@@ -29,7 +29,7 @@ input {
 }
 
 #boxed {
-  width: 500px;
+  width: 600px;
   border: 1.5px solid #d1d1d1;
   padding-bottom: 10px;
 }
@@ -41,7 +41,7 @@ input {
 
 table {
   table-layout: fixed;
-  width: 500px;
+  width: 600px;
 }
 
 body {

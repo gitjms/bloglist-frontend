@@ -1,14 +1,14 @@
 import React from 'react'
 
 
-const Blogs = ({rows}) => {
+const Blogs = ({ rows }) => {
 
-    return (
-        <div>
-            <b>Blogs</b>
-            {rows}
-        </div>
-    )
+  return (
+    <>
+      <b>Blogs</b>
+      {rows}
+    </>
+  )
 }
 
 export default Blogs

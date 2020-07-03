@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import ErrorMessage from './components/ErrorMessage'
 import Message from './components/Message'
 import blogService from './services/blogs'
@@ -43,20 +43,15 @@ const App = () => {
   }, [])
 
   const handleLogin = async (loginObject) => {
-    if (loginObject.username === "" || loginObject.password === "") {
-      setErrorMessage(
-        `both fields are required`
-      )
+    if (loginObject.username === '' || loginObject.password === '') {
+      setErrorMessage('both fields are required')
       setTimeout(() => {
         setErrorMessage(null)
       }, 4000)
-      loginFormRef.current.toggleVisibility()
     } else {
       try {
         const user = await loginService.login(loginObject)
-        window.localStorage.setItem(
-          'loggedBloglistappUser', JSON.stringify(user)
-        )
+        window.localStorage.setItem('loggedBloglistappUser', JSON.stringify(user))
         blogService.setToken(user.token)
         setUser(user)
       } catch (exception) {
@@ -116,20 +111,16 @@ const App = () => {
       .create(blogObject)
       .then(createdBlog => {
         setBlogs(blogs.concat(createdBlog))
-        setMessage(
-        `added ${blogObject.title} by ${blogObject.author}`
-        )
+        setMessage(`added \`${blogObject.title}\` by \`${blogObject.author}\``)
         setTimeout(() => {
-        setMessage(null)
+          setMessage(null)
         }, 4000)
       })
       .catch((error) => {
-          setErrorMessage(
-              `${error}, all fields are required`
-          )
-          setTimeout(() => {
+        setErrorMessage(`${error}, all fields are required`)
+        setTimeout(() => {
           setErrorMessage(null)
-          }, 4000)
+        }, 4000)
       })
   }
 
@@ -142,7 +133,7 @@ const App = () => {
       title: blog.title,
       url: blog.url
     }
-    
+
     blogService
       .update(blog.id, changedBlog)
       .then(returnedBlog => {
@@ -150,8 +141,7 @@ const App = () => {
           oldblog => oldblog.id !== blog.id
             ? oldblog
             : returnedBlog
-          )
-        )
+        ))
       })
       .catch(error => {
         scroller.scrollToTop()
@@ -165,28 +155,26 @@ const App = () => {
 
   const deleteBlogOf = id => {
     const blog = blogs.find(n => n.id === id)
-    
-     if (window.confirm(`Delete \`${blog.title}\`?`)) {
+
+    if (window.confirm(`Delete \`${blog.title}\`?`)) {
       blogService
-      .remove(id, blog)
-      .then(() => {
-        setBlogs(blogs.filter(n => n.id !== id))
-        scroller.scrollToTop()
-        setMessage(
-          `deleted \`${blog.title}\``
-        )
-        setTimeout(() => {
-          setMessage(null)
-        }, 4000)
-      })
-      .catch(error => {
-        scroller.scrollToTop()
-        setErrorMessage(`${error}`)
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 4000)
-      })
-     }
+        .remove(id, blog)
+        .then(() => {
+          setBlogs(blogs.filter(n => n.id !== id))
+          scroller.scrollToTop()
+          setMessage(`deleted \`${blog.title}\``)
+          setTimeout(() => {
+            setMessage(null)
+          }, 4000)
+        })
+        .catch(error => {
+          scroller.scrollToTop()
+          setErrorMessage(`${error}`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 4000)
+        })
+    }
   }
 
   const loginForm = () => (
@@ -202,7 +190,7 @@ const App = () => {
   )
 
   const filter = () => (
-    <Filter 
+    <Filter
       setTitleToFind={setTitleToFind}
       titleToFind={titleToFind}
       handleFindTitleChange={handleFindTitleChange}
@@ -210,36 +198,37 @@ const App = () => {
   )
 
   return (
-  <>
-	  <nav id='nav' className='navbar navbar-light bg-light'>
-      {/* <img src='/logo.png' width='50' height='35' className='d-inline-block align-top' alt=''/> */}
-      <strong>Bloglist</strong>
-      
-      {user !== null ?
-      <div>
-        {user.name} logged in
-        <button className='btn btn-primary ml-2' type='submit' onClick={handleLogout}>
-          Logout
-        </button>
-      </div>
-      : loginForm()
-      }
-    </nav>
+    <>
+      <nav id='nav' className='navbar navbar-light bg-light'>
+        {/* <img src='/logo.png' width='50' height='35' className='d-inline-block align-top' alt=''/> */}
+        <strong>Bloglist</strong>
 
-    <div className='container'>
-      <Message message={message} />
-      <ErrorMessage message={errorMessage} />
-      {user !== null && blogForm()}
-      {user !== null &&
+        {user !== null ?
+          <div>
+            {user.name} logged in
+            <button className='btn btn-primary ml-2' id='logout-button' type='submit'
+              onClick={handleLogout}>
+              Logout
+            </button>
+          </div>
+          : loginForm()
+        }
+      </nav>
+
+      <div className='container'>
+        <Message message={message} />
+        <ErrorMessage message={errorMessage} />
+        {user !== null && blogForm()}
+        {user !== null &&
         <div className='col-auto'>
           {filter()}
           <br />
           <Blogs rows={rows()}/>
         </div>
-      }
-      <Footer />
-    </div>
-  </>
+        }
+        <Footer />
+      </div>
+    </>
   )
 }
 

@@ -104,5 +104,62 @@ REACT-SCROLL (SCROLL TO ERROR)
 
 npm install react-scroll
 
+-------------------------------------------------------
+
+npm install --save prop-types
+
+-------------------------------------------------------
+ESLINT
+
+Ei tarvitse eslint --init, koska create-react-app
+asentaa sen valmiiksi
+
+npm install --save-dev eslint-plugin-jest
+
+-------------------------------------------------------
+TEST
+
+npm install --save-dev @testing-library/react @testing-library/jest-dom
+
+npm test <- watch-moodissa (konsoli odottaa muutoksia koodissa)
+
+CI=true npm test <- normaali testi-moodi
+
+CI=true npm test -- 'tietty testi tai osio'
+
+CI=true npm test -- --coverage
+
+-------
+CYPRESS
+
+npm install --save-dev cypress
+
+npm install eslint-plugin-cypress --save-dev
+
+(You can now open Cypress by running:
+node_modules\.bin\cypress open)
+
+"scripts": {
+    ...
+    "cypress:open": "cypress open"
+    ...
+
+backendille npm-skripti:
+"scripts": {
+    ...
+    "start:test": "cross-env NODE_ENV=test node index.js"
+    ...
+
+Järjestelmän tulee olla käynnissä kun testit suoritetaan:
+
+backend: npm run start:test
+frontend: npm start
+
+frontend: npm run cypress:open
+
+
+
+
+
 
 

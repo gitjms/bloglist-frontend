@@ -11,9 +11,9 @@ const Footer = () => {
       <br />
       <hr />
       <center>
-      <em>Bloglist app, Full Stack Web Development</em>
-      <br />
-      <em>University of Helsinki 2020</em>
+        <em>Bloglist app, Full Stack Web Development</em>
+        <br />
+        <em>University of Helsinki 2020</em>
       </center>
     </div>
   )
