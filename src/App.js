@@ -109,19 +109,23 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
     blogService
       .create(blogObject)
-      .then(createdBlog => {
-        setBlogs(blogs.concat(createdBlog))
-        setMessage(`added \`${blogObject.title}\` by \`${blogObject.author}\``)
-        setTimeout(() => {
-          setMessage(null)
-        }, 4000)
-      })
-      .catch((error) => {
-        setErrorMessage(`${error}, all fields are required`)
+      .then(() => {
+        blogService
+          .getAll()
+          .then(blogs => {
+            setBlogs(blogs)
+          })
+      }, [])
+      .catch(() => {
+        setErrorMessage('fields title and url are required, url must be unique')
         setTimeout(() => {
           setErrorMessage(null)
         }, 4000)
       })
+    setMessage(`added \`${blogObject.title}\``)
+    setTimeout(() => {
+      setMessage(null)
+    }, 4000)
   }
 
   const likeBlogOf = (id) => {

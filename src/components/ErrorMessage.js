@@ -2,7 +2,7 @@ import React from 'react'
 
 const ErrorMessage = ({ message }) => {
   const errorMessageStyle = {
-    color: 'red',
+    color: 'rgb(255, 0, 0)',
     background: 'lightgray',
     fontSize: 20,
     borderStyle: 'solid',
@@ -17,7 +17,7 @@ const ErrorMessage = ({ message }) => {
   }
 
   return (
-    <div className="error" style={errorMessageStyle} >
+    <div className='error' style={errorMessageStyle} >
       {message}
     </div>
   )

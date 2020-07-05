@@ -6,8 +6,8 @@ const BlogForm = ({ createBlog }) => {
   BlogForm.propTypes = {
     addBlog: PropTypes.func.isRequired,
     handleTitleChange: PropTypes.func.isRequired,
-    handleAuthorChange: PropTypes.func.isRequired,
     handleUrlChange: PropTypes.func.isRequired,
+    handleAuthorChange: PropTypes.func.isRequired,
     newTitle: PropTypes.string.isRequired,
     newUrl: PropTypes.string.isRequired
   }

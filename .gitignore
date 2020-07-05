@@ -10,3 +10,6 @@
 npm-project.txt
 serviceWorker.js
 setupTests.js
+
+cypress/videos
+cypress/screenshots

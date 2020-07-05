@@ -141,7 +141,8 @@ node_modules\.bin\cypress open)
 
 "scripts": {
     ...
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "test:e2e": "cypress run"
     ...
 
 backendille npm-skripti:
@@ -155,7 +156,9 @@ Järjestelmän tulee olla käynnissä kun testit suoritetaan:
 backend: npm run start:test
 frontend: npm start
 
-frontend: npm run cypress:open
+frontend: npm run cypress:open (graafinen)
+TAI
+frontend: npm run test:e2e (komentoikkuna)
 
 
 
