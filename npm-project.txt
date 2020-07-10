@@ -160,7 +160,17 @@ frontend: npm run cypress:open (graafinen)
 TAI
 frontend: npm run test:e2e (komentoikkuna)
 
+-------------------------------------------------------
+Security
 
+npm install --save-dev eslint-plugin-security
+.eslintrc:
+"plugins": [
+  "security"
+],
+"extends": [
+  "plugin:security/recommended"
+]
 
 
 
