@@ -1,68 +1,84 @@
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import { useField } from '../hooks'
+import { useDispatch } from 'react-redux'
+import { initializeBlogs, createBlog } from '../reducers/blogReducer'
+import { setMessage } from '../reducers/messageReducer'
 
-const BlogForm = ({ createBlog }) => {
 
-  BlogForm.propTypes = {
-    addBlog: PropTypes.func.isRequired,
-    handleTitleChange: PropTypes.func.isRequired,
-    handleUrlChange: PropTypes.func.isRequired,
-    handleAuthorChange: PropTypes.func.isRequired,
-    newTitle: PropTypes.string.isRequired,
-    newUrl: PropTypes.string.isRequired
-  }
+const BlogForm = (props) => {
+  const dispatch = useDispatch()
 
-  const [ newTitle, setNewTitle ] = useState('')
-  const [ newAuthor, setNewAuthor ] = useState('')
-  const [ newUrl, setNewUrl ] = useState('')
+  const [ form, setForm ] = useState(true)
+  const ShowOrhide = { display: props.visible ? '' : 'none' }
 
-  const handleTitleChange = (event) => { setNewTitle(event.target.value) }
-  const handleAuthorChange = (event) => { setNewAuthor(event.target.value) }
-  const handleUrlChange = (event) => { setNewUrl(event.target.value) }
+  const newTitle = useField(form)
+  const newAuthor = useField(form)
+  const newUrl = useField(form)
 
-  const addBlog = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault()
-    createBlog({
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl
-    })
+    setForm(true)
 
-    setNewTitle('')
-    setNewAuthor('')
-    setNewUrl('')
+    const newBlog = {
+      title: newTitle.value,
+      author: newAuthor.value,
+      url: newUrl.value,
+      user: props.user.name
+    }
+
+    try {
+      dispatch(createBlog(newBlog))
+      console.log(newTitle.value)
+      dispatch(setMessage(`added \`${newTitle.value}\``,'msg',5))
+    } catch (exception) {
+      dispatch(setMessage(`error: \`${exception}\``,'err',5))
+    }
+
+    dispatch(initializeBlogs())
+    props.setVisible(!props.visible)
+    props.history.goBack()
   }
 
   return (
-    <div className='col-auto' id='boxed'>
+    <div className='col-auto' style={ShowOrhide}>
       <br />
       <b>Add a new blog</b>
-      <form onSubmit={addBlog}>
+      <form>
         <div align='left' className='form-group'>
-          <label id='formlabel' htmlFor='title'>title:</label>
-          <input id='title' type='text' className='form-control'
-            value={newTitle}
-            onChange={handleTitleChange}
-          />
+          <label id='formlabel'>title:</label>
+          <input className='form-control' {...newTitle} />
         </div>
         <div align='left' className='form-group'>
-          <label id='formlabel' htmlFor='author'>author:</label>
-          <input id='author' type='text' className='form-control'
-            value={newAuthor}
-            onChange={handleAuthorChange}
-          />
+          <label id='formlabel'>author:</label>
+          <input className='form-control' {...newAuthor} />
         </div>
         <div align='left' className='form-group'>
-          <label id='formlabel' htmlFor='url'>url:</label>
-          <input id='url' type='text' className='form-control'
-            value={newUrl}
-            onChange={handleUrlChange}
-          />
+          <label id='formlabel'>url:</label>
+          <input className='form-control' {...newUrl} />
         </div>
         <div align='left' className='form-group'>
           <button className='btn btn-primary' id='add-button' type='submit'
-            style={{ float: 'left', marginTop: '12px' }}>
+            style={{ float: 'left', marginTop: '12px' }}
+            onClick={handleSubmit}>
             add
+          </button>
+          <button className='btn btn-primary' id='reset-button' type='submit'
+            style={{ float: 'left', marginTop: '12px' }}
+            onClick={() => {
+              setForm(false)
+            }}>
+            reset
+          </button>
+        </div>
+        <div align='right' className='form-group'>
+          <button className='btn btn-primary' id='formback-button' type='button'
+            onClick={() => {
+              props.history.goBack()
+              props.setVisible(!props.visible)
+            }}
+            props={{
+              ...props,
+            }} >back
           </button>
         </div>
       </form>

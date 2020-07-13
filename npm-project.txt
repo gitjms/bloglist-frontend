@@ -172,7 +172,11 @@ npm install --save-dev eslint-plugin-security
   "plugin:security/recommended"
 ]
 
+-------------------------------------------------------
+Redux
+npm install redux --save
 
-
+Router
+npm install --save react-router-dom
 
 

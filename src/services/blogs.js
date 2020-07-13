@@ -13,8 +13,7 @@ const getAll = async () => {
   const response = await request
   return response.data
 }
-
-const create = async newObject => {
+const create = async (newObject) => {
   const config = {
     headers: { Authorization: token },
   }
@@ -29,7 +28,8 @@ const update = async (id, newObject) => {
   return response.data
 }
 
-const remove = async id => {
+const remove = async (id) => {
+  console.log('remove: ',id)
   const config = {
     headers: { Authorization: token },
   }

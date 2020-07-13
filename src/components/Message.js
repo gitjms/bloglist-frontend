@@ -1,8 +1,28 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 
-const Message = ({ message }) => {
+const Message = () => {
+  const message = useSelector(({ message }) => {
+    console.log('Message ',message)
+    if ( message !== null ) {
+      return message
+    }
+    return { which: '' , text: '' }
+  })
+
   const messageStyle = {
     color: 'green',
+    background: 'lightgray',
+    fontSize: 20,
+    borderStyle: 'solid',
+    borderRadius: 5,
+    padding: 10,
+    marginTop: 10,
+    marginBottom: 10
+  }
+
+  const errorMessageStyle = {
+    color: 'rgb(255, 0, 0)',
     background: 'lightgray',
     fontSize: 20,
     borderStyle: 'solid',
@@ -17,8 +37,14 @@ const Message = ({ message }) => {
   }
 
   return (
-    <div className='message' style={messageStyle} >
-      {message}
+    <div
+      style={message.which === 'msg'
+        ? messageStyle
+        : message.which === 'err'
+          ? errorMessageStyle
+          : null
+      } >
+      {message.text}
     </div>
   )
 }

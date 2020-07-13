@@ -1,80 +1,57 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useDispatch } from 'react-redux'
+import { useParams } from 'react-router-dom'
+import { initializeBlogs } from '../reducers/blogReducer'
 
+const Blog = ({ props }) => {
+  const id = useParams().id
+  const dispatch = useDispatch()
 
-const Blog = ({ user,blog,likeBlog,deleteBlog }) => {
+  const ShowOrhide = { display: props.visible ? '' : 'none' }
 
-  const [visible, setVisible] = useState(false)
+  const blog = props.blogs.find(n => n.id === id)
 
-  const hideWhenVisible = { display: visible ? 'none' : '' }
-  const showWhenVisible = { display: visible ? '' : 'none' }
-
-  return (
-    <>
-      <div style={hideWhenVisible} id='boxed'>
-        <li className='list-group-item'>
-          <table>
-            <tbody>
-              <tr>
-                <td style={{ width: '500px' }}>
-                  <em><a href={blog.url}>
-                    {blog.title}
-                  </a></em>
-                  <em>{blog.author}</em>
-                </td>
-                <td style={{ width: '50px' }}>
-                  <button type='button' id='show-button' className='btn btn-primary'
-                    onClick={() => setVisible(true)}>show
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </li>
-      </div>
-      <div style={showWhenVisible} id='boxed' className='blogs'>
-        <li className='list-group-item'>
-          <table>
-            <tbody>
-              <tr>
-                <td style={{ width: '500px' }}><em><a href={blog.url}>{blog.title}</a></em>
-                  <em>{blog.author}</em></td>
-                <td style={{ width: '50px' }}><button type='button' className='btn btn-primary'
-                  onClick={() => setVisible(false)}>hide</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </li>
-        <li className='list-group-item'>
-          {blog.url}
-        </li>
-        <li className='list-group-item'>
-          <div className='likes'>
-            <span className='like'>Likes: {blog.likes}</span>
-            <button type='button' className='btn btn-success' id='like-button'
-              style={{ paddingLeft: '10px', width: '60px', marginLeft: '10px' }}
-              onClick={likeBlog}>+1</button>
-          </div>
-        </li>
-        <li className='list-group-item'>
-          <table>
-            <tbody>
-              <tr>
-                <td style={{ width: '490px' }}>
-                  {blog.user.name}
-                </td>
-                {user.name === blog.user.name &&
-                  <td style={{ width: '60px' }}>
-                    <button type='button' id='delete-button' className='btn btn-warning'
-                      onClick={deleteBlog}>delete</button>
-                  </td>
-                }
-              </tr>
-            </tbody>
-          </table>
-        </li>
-      </div>
-    </>
+  return(
+    <div style={ShowOrhide}>
+      <br />
+      <li className='list-group-item'>
+        <b id='b-left'>{blog.title}</b>by<b id='b-right'>{blog.author}</b>
+      </li>
+      <br />
+      <li className='list-group-item'>
+        <a href={blog.url}>{blog.url}</a>
+      </li>
+      <li className='list-group-item'>
+        {blog.likes} likes
+        <button type='button' className='btn btn-success' id='like-button'
+          onClick={() => {
+            props.likeBlog({ ...blog, user: blog.user.id })
+            props.setMessage(`you liked '${blog.title}'`,'msg',5)
+          }}>like</button>
+      </li>
+      <li className='list-group-item'>
+        added by {blog.user.name}
+        { props.user.name === blog.user.name &&
+          <button type='button' id='delete-button' className='btn btn-warning'
+            onClick={() => {
+              props.history.goBack()
+              props.deleteBlog(id)
+              props.setMessage(`you deleted '${blog.title}'`,'msg',5)
+              dispatch(initializeBlogs())
+              props.setVisible(!props.visible)
+            }}>delete</button>
+        }
+        <button type='button' id='back-button' className='btn btn-primary'
+          onClick={() => {
+            props.history.goBack()
+            props.setVisible(!props.visible)
+          }}
+          props={{
+            ...props,
+          }} >back
+        </button>
+      </li>
+    </div>
   )
 }
 

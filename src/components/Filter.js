@@ -1,16 +1,23 @@
 import React from 'react'
+import { useDispatch } from 'react-redux'
+import { filterChange } from '../reducers/filterReducer'
 
-const Filter = ({ titleToFind,setTitleToFind,handleFindTitleChange }) => {
+const Filter = () => {
+  const dispatch = useDispatch()
+
+  const handleChange = (event) => {
+    event.preventDefault()
+    const content = event.target.value
+    dispatch(filterChange('SET_FILTER',content))
+  }
+
   return (
-    <form onChange={setTitleToFind}>
-      <div align="left">
-        <label htmlFor="filter">filter shown with:</label>
-        <input id="filter" type="text" className="form-control"
-          value={titleToFind}
-          onChange={handleFindTitleChange}
-        />
-      </div>
-    </form>
+    <div className='col-auto'>
+      <form onChange={handleChange}>
+        <label htmlFor='filter'>filter shown with:</label>
+        <input name='filter' type='text' className='form-control' />
+      </form>
+    </div>
   )
 }
 

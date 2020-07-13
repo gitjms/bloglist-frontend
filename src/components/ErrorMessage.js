@@ -1,6 +1,14 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 
-const ErrorMessage = ({ message }) => {
+const ErrorMessage = () => {
+  const message = useSelector(({ message }) => {
+    if ( message !== null ) {
+      return message
+    }
+    return null
+  })
+
   const errorMessageStyle = {
     color: 'rgb(255, 0, 0)',
     background: 'lightgray',
@@ -17,7 +25,7 @@ const ErrorMessage = ({ message }) => {
   }
 
   return (
-    <div className='error' style={errorMessageStyle} >
+    <div style={errorMessageStyle} >
       {message}
     </div>
   )
