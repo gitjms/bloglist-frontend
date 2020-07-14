@@ -32,7 +32,6 @@ export const errorMessageChange = (text, which) => {
 }
 
 const messageReducer = (state = null, action) => {
-  console.log('messageReducer ',state,action)
   switch (action.type) {
   case 'SET_MESSAGE':
     return action.data

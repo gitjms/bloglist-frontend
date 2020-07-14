@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Switch, Route, Link, useHistory } from 'react-router-dom'
 
 import { initializeBlogs  } from './reducers/blogReducer'
-import { useDispatch } from 'react-redux'
+import { initializeUsers  } from './reducers/userReducer'
+import { useDispatch, useSelector, connect } from 'react-redux'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -11,20 +12,22 @@ import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 
 import Blogs from './components/Blogs'
+import Users from './components/Users'
 import Message from './components/Message'
 import Footer from './components/Footer'
 import Togglable from './components/Togglable'
+import { setLoggedUser } from './reducers/loggedUserReducer'
+import { setMessage } from './reducers/messageReducer'
 
 const App = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
     dispatch(initializeBlogs())
+    dispatch(initializeUsers())
   }, [dispatch])
 
-  const [ user, setUser ] = useState(null)
   const [ visible, setVisible ] = useState(false)
-  const [ message, setMessage ] = useState({ which: '' , text: '' })
 
   const history = useHistory()
   const loginFormRef = useRef()
@@ -33,22 +36,22 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      dispatch(setLoggedUser(user))
       blogService.setToken(user.token)
     }
-  }, [])
+  }, [dispatch])
 
   const handleLogin = async (loginObject) => {
     if (loginObject.username === '' || loginObject.password === '') {
-      setMessage('both fields are required','err',5)
+      dispatch(setMessage('both fields are required','err',5))
     } else {
       try {
         const user = await loginService.login(loginObject)
         window.localStorage.setItem('loggedBloglistappUser', JSON.stringify(user))
         blogService.setToken(user.token)
-        setUser(user)
+        dispatch(setLoggedUser(user))
       } catch (exception) {
-        setMessage('wrong username or password','err',5)
+        dispatch(setMessage('wrong username or password','err',5))
       }
     }
   }
@@ -56,13 +59,12 @@ const App = () => {
   const handleLogout = async (event) => {
     event.preventDefault()
     try {
-      setUser(null)
+      dispatch(setLoggedUser(null))
       window.localStorage.clear()
     } catch (exception) {
-      setMessage(`${exception}`,'err',5)
+      dispatch(setMessage(`${exception}`,'err',5))
     }
     window.location.reload()
-    setMessage('logged out successfully','msg',5)
   }
 
   const loginForm = () => (
@@ -79,6 +81,14 @@ const App = () => {
       }}
     >CREATE NEW
     </Link>
+  )
+
+  const user = (
+    useSelector(state => {
+      return state.loggedUser !== null
+        ? state.loggedUser
+        : null
+    })
   )
 
   return (
@@ -108,14 +118,13 @@ const App = () => {
       </nav>
 
       <div className='container'>
-        <Message message={message} />
+        <Message />
         <Switch>
           <Route path='/create'>
             <BlogForm
               user={user}
               visible={true}
               history={history}
-              blogForm={blogForm}
               setVisible={setVisible}
             />
           </Route>
@@ -133,7 +142,16 @@ const App = () => {
             }
           </Route>
           <Route path='/users'>
-
+            {user !== null
+              ? <Users
+                user={user}
+                visible={visible}
+                history={history}
+                setVisible={setVisible}
+                setMessage={setMessage}
+              />
+              : null
+            }
           </Route>
         </Switch>
         <Footer />
@@ -142,4 +160,12 @@ const App = () => {
   )
 }
 
-export default App
+const mapStateToProps = (state) => {
+  return {
+    user: state.loggedUser
+  }
+}
+
+export default connect(
+  mapStateToProps
+)(App)

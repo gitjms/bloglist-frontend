@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Switch, Route, Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import Filter from './Filter'
@@ -7,21 +7,29 @@ import { likeBlog, deleteBlog } from '../reducers/blogReducer'
 import { setMessage } from '../reducers/messageReducer'
 
 const Blogs = (props) => {
-  const hideOrShow = { display: props.visible ? 'none' : '' }
+
+  const [ listVisible, setListVisible ] = useState(props.visible)
+  const hideOrShow = { display: listVisible ? 'none' : '' }
 
   const bloglist = () => (
-    props.blogs.map(blog =>
-      <li id='boxed' className='list-group-item' key={blog.id}>
-        <Link
-          to={`/blogs/${blog.id}`}
-          onClick={() => {
-            props.setVisible(true)
-            props.history.push('/blogs')
-          }}
-        >{blog.title}
-        </Link>
-      </li>
-    )
+    <table className='table-striped table-hover'>
+      <tbody>
+        {props.blogs.map(blog =>
+          <tr key={blog.id}>
+            <td>
+              <Link
+                to={`/blogs/${blog.id}`}
+                onClick={() => {
+                  setListVisible(!listVisible)
+                  props.history.push('/blogs')
+                }}
+              >{blog.title}
+              </Link>
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
   )
 
   return (
@@ -36,29 +44,19 @@ const Blogs = (props) => {
             : null
           }
         </div>
+        <br />
         <div>
-          <ul>
-            {bloglist()}
-          </ul>
+          {bloglist()}
         </div>
       </div>
 
       <Switch>
-        {/* <Route path='/create'>
-          <BlogForm
-            props={{
-              ...props,
-              setVisible: props.setVisible,
-              history: props.history
-            }}
-          />
-        </Route> */}
         <Route path='/blogs/:id'>
           <Blog
             props={{
               ...props,
-              visible: props.visible,
-              setVisible: props.setVisible,
+              listVisible: listVisible,
+              setListVisible: setListVisible,
               history: props.history,
               setMessage: props.setMessage
             }}

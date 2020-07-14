@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 
 const Message = () => {
   const message = useSelector(({ message }) => {
-    console.log('Message ',message)
     if ( message !== null ) {
       return message
     }

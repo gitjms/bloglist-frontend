@@ -1,59 +1,50 @@
 import React, { useState } from 'react'
 import { useField } from '../hooks'
 import { useDispatch } from 'react-redux'
-import { initializeBlogs, createBlog } from '../reducers/blogReducer'
+import { initializeBlogs, commentBlog } from '../reducers/blogReducer'
 import { setMessage } from '../reducers/messageReducer'
 
 
-const BlogForm = (props) => {
+const CommentForm = (props) => {
   const dispatch = useDispatch()
 
   const [ form, setForm ] = useState(true)
-  const ShowOrhide = { display: props.visible ? '' : 'none' }
+  const [ commentVisible, setCommentVisible ] = useState(props.blogVisible)
+  const ShowOrhide = { display: commentVisible ? '' : 'none' }
 
-  const newTitle = useField(form)
-  const newAuthor = useField(form)
-  const newUrl = useField(form)
+  const newContent = useField(form)
 
   const handleSubmit = (event) => {
     event.preventDefault()
     setForm(true)
 
-    const newBlog = {
-      title: newTitle.value,
-      author: newAuthor.value,
-      url: newUrl.value,
-      user: props.user.name
+    const commentedBlog = {
+      ...props.blog,
+      comments: newContent.value
     }
+    console.log(commentedBlog)
 
     try {
-      dispatch(createBlog(newBlog))
-      dispatch(setMessage(`added \`${newTitle.value}\``,'msg',5))
+      dispatch(commentBlog(commentedBlog))
+      dispatch(setMessage(`added comment\`${newContent.value}\``,'msg',5))
     } catch (exception) {
       dispatch(setMessage(`error: \`${exception}\``,'err',5))
     }
 
     dispatch(initializeBlogs())
-    props.setVisible(!props.visible)
+    props.setBlogVisible(!props.visible)
+    setCommentVisible(!commentVisible)
     props.history.goBack()
   }
 
   return (
     <div className='col-auto' style={ShowOrhide}>
       <br />
-      <b>Add a new blog</b>
+      <b>Add a new Comment</b>
       <form>
         <div align='left' className='form-group'>
-          <label id='formlabel'>title:</label>
-          <input className='form-control' {...newTitle} />
-        </div>
-        <div align='left' className='form-group'>
-          <label id='formlabel'>author:</label>
-          <input className='form-control' {...newAuthor} />
-        </div>
-        <div align='left' className='form-group'>
-          <label id='formlabel'>url:</label>
-          <input className='form-control' {...newUrl} />
+          <label id='formlabel'>comment:</label>
+          <input className='form-control' {...newContent} />
         </div>
         <div align='left' className='form-group'>
           <button className='btn btn-primary' id='add-button' type='submit'
@@ -73,7 +64,8 @@ const BlogForm = (props) => {
           <button className='btn btn-primary' id='formback-button' type='button'
             onClick={() => {
               props.history.goBack()
-              props.setVisible(!props.visible)
+              setCommentVisible(!commentVisible)
+              props.setBlogVisible(!props.blogVisible)
             }}
             props={{
               ...props,
@@ -85,4 +77,4 @@ const BlogForm = (props) => {
   )
 }
 
-export default BlogForm
+export default CommentForm

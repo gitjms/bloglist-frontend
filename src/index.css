@@ -2,6 +2,10 @@ h1 {
   margin-left: 5px;
 }
 
+th { 
+  padding-left: 30px;
+}
+
 #b-left {
   font-size: 25px;
   padding-right: 0px;
@@ -13,9 +17,7 @@ h1 {
 }
 
 #like-button,#delete-button,#back-button {
-  padding-top: 10px;
-  margin-top: 3px;
-  margin-left: 10px;
+  padding-top: 7px;
 }
 
 #formback-button {
@@ -48,9 +50,16 @@ ul {
   padding-left: 0px;
 }
 
-.list-group-item {
+#big-list {
+  width: 500px;
   padding-top: 5px;
-  padding-bottom: 5px;
+  padding-bottom: 10px;
+  border: 1.5px solid #d1d1d1;
+}
+
+#small-list {
+  padding-top: 0px;
+  padding-bottom: 0px;
 }
 
 body {

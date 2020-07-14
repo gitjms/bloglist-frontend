@@ -1,50 +1,37 @@
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
-
+import { useField } from '../hooks'
 
 const LoginForm = ({ loginUser }) => {
 
-  LoginForm.propTypes = {
-    handleLogin: PropTypes.func.isRequired,
-    handleUsernameChange: PropTypes.func.isRequired,
-    handlePasswordChange: PropTypes.func.isRequired,
-    username: PropTypes.string.isRequired,
-    password: PropTypes.string.isRequired
-  }
+  const [ form, setForm ] = useState(true)
 
-  const [ username, setUsername ] = useState('')
-  const [ password, setPassword ] = useState('')
+  const newUsername = useField(form)
+  const newPassword = useField(form)
 
-  const handleUsernameChange = (event) => { setUsername(event.target.value) }
-  const handlePasswordChange = (event) => { setPassword(event.target.value) }
-
-  const handleLogin = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault()
-    loginUser({
-      username: username,
-      password: password
-    })
+    setForm(true)
 
-    setUsername('')
-    setPassword('')
+    const newUser = {
+      username: newUsername.value,
+      password: newPassword.value
+    }
+
+    loginUser(newUser)
   }
 
   return (
     <div className='form-group-inline'>
-      <form onSubmit={handleLogin}>
+      <form>
         <div align='left' className='form-group-inline'>
-          <label id='formlabel' htmlFor='username'>username:</label>
-          <input id='username' type='text' className='form-control' name='Username'
-            value={username}
-            onChange={handleUsernameChange}
-          />
-          <label id='formlabel' htmlFor='password'>password:</label>
-          <input id='password' type='text' className='form-control' name='Password'
-            value={password}
-            onChange={handlePasswordChange}
-          />
+          <label id='formlabel'>username:</label>
+          <input className='form-control' {...newUsername} />
+          <label id='formlabel'>password:</label>
+          <input className='form-control' {...newPassword} />
         </div>
-        <button className='btn btn-primary' id='login-button' type='submit' style={{ float: 'left' }}>login</button>
+        <button className='btn btn-primary' id='login-button' type='button'
+          style={{ float: 'left' }}
+          onClick={handleSubmit}>login</button>
       </form>
     </div>
   )
