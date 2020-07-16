@@ -18,7 +18,7 @@ const Blog = ({ props }) => {
   const commentForm = () => (
     <CommentForm
       blog={blog}
-      updateBlog={props.updateBlog}
+      addComment={props.addComment}
       history={props.history}
       initializeBlogs={props.initializeBlogs}
       setMessage={props.setMessage}
@@ -49,7 +49,12 @@ const Blog = ({ props }) => {
       <button type='button' className='btn btn-success' id='like-button'
         onClick={() => {
           try {
-            props.updateBlog({ ...blog, likes: blog.likes + 1, user: blog.user.id })
+            props.updateLikes({
+              ...blog,
+              likes: blog.likes + 1,
+              user: blog.user.id,
+              comments: blog.comments.map(com => com.id)
+            })
             scroller.scrollToTop()
             props.setMessage(`you liked '${blog.title}'`,'msg',5)
           } catch (exception) {
@@ -92,8 +97,8 @@ const Blog = ({ props }) => {
         <div className='col-auto'>
           <ul>
             {blog.comments.map(comment =>
-              <li key={comment}>
-                {comment}
+              <li key={comment.id}>
+                {comment.content}
               </li>
             )}
           </ul>

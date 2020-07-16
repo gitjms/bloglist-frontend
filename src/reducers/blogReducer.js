@@ -30,12 +30,21 @@ export const deleteBlog = (id) => {
   }
 }
 
-
-export const updateBlog = (blog) => {
+export const updateLikes = (blog) => {
   return async dispatch => {
     const returnedContent = await blogService.update(blog)
     dispatch({
-      type: 'UPDATE_BLOG',
+      type: 'UPDATE_LIKES',
+      data: returnedContent
+    })
+  }
+}
+
+export const addComment = (comment) => {
+  return async dispatch => {
+    const returnedContent = await blogService.addComment(comment)
+    dispatch({
+      type: 'ADD_COMMENT',
       data: returnedContent
     })
   }
@@ -45,10 +54,17 @@ const findById = (state, id) => {
   return state.find(n => n.id === id)
 }
 
-const changedBlog = (state, id, likes) => {
+const likedBlog = (state, id, likes) => {
   return {
     ...findById(state, id),
     likes: likes
+  }
+}
+
+const commentedBlog = (state, id, comments) => {
+  return {
+    ...findById(state, id),
+    comments: comments
   }
 }
 
@@ -60,9 +76,16 @@ const blogReducer = (state = [], action) => {
     return [...state, action.data]
   case 'DELETE_BLOG':
     return [...state, action.data]
-  case 'UPDATE_BLOG':
+  case 'UPDATE_LIKES':
     return state.map(blog =>
-      blog.id !== action.data.id ? blog : changedBlog(state, action.data.id, action.data.likes)
+      blog.id !== action.data.id ? blog : likedBlog(state, action.data.id, action.data.likes)
+    )
+  case 'ADD_COMMENT':
+    return state.map(blog =>
+      blog.id !== action.data.blog
+        ? blog
+        : commentedBlog(state, action.data.blog,
+          blog.comments.concat({ content: action.data.content, id: action.data.id }))
     )
   default:
     return state

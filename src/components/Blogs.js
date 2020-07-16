@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import Filter from './Filter'
 import Blog from './Blog'
 import BlogForm from './BlogForm'
-import { updateBlog, deleteBlog, createBlog, initializeBlogs } from '../reducers/blogReducer'
+import { updateLikes, deleteBlog, createBlog, addComment, initializeBlogs } from '../reducers/blogReducer'
 import { setMessage } from '../reducers/messageReducer'
 
 const Blogs = (props) => {
@@ -109,8 +109,9 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = {
-  updateBlog,
+  updateLikes,
   deleteBlog,
+  addComment,
   initializeBlogs,
   setMessage
 }

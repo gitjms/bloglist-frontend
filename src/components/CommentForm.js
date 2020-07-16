@@ -18,14 +18,12 @@ const CommentForm = (props) => {
     event.preventDefault()
     setForm(true)
 
-    props.blog.comments.push(newComment.value)
-
     try {
-      props.updateBlog({
-        ...props.blog,
-        comments: props.blog.comments,
-        user: props.blog.user.id
+      props.addComment({
+        content: newComment.value,
+        blog: props.blog.id
       })
+      props.initializeBlogs()
       props.setMessage(`added comment '${newComment.value}'`,'msg',5)
     } catch (exception) {
       props.setMessage(exception,'err',10)
@@ -33,7 +31,6 @@ const CommentForm = (props) => {
 
     scroller.scrollToTop()
     handleReset(event)
-    props.initializeBlogs()
   }
 
   const size = {
