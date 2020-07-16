@@ -12,7 +12,7 @@ const User = ({ props }) => {
   }
 
   const userBlogs = props.blogs.map(blog => {
-    return blog.user.name === user.name
+    return blog.user.id === user.id
       ? blog : null
   }).filter(blog => !!blog)
 

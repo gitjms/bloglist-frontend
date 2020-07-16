@@ -63,8 +63,8 @@ const App = () => {
     } catch (exception) {
       dispatch(setMessage(exception,'err',5))
     }
-    window.location.reload()
     history.goBack()
+    window.location.reload()
   }
 
   const loginForm = () => (
@@ -90,10 +90,10 @@ const App = () => {
         {user !== null ?
           <>
             <div>
-              <Link to='/blogs' >blogs</Link>
+              <Link to='/blogs' onClick={() => { history.push('/') }} >blogs</Link>
             </div>
             <div>
-              <Link to='/users' >users</Link>
+              <Link to='/users' onClick={() => { history.push('/') }}>users</Link>
             </div>
             <div>
               {user.name} logged in
