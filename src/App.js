@@ -63,8 +63,8 @@ const App = () => {
     } catch (exception) {
       dispatch(setMessage(exception,'err',5))
     }
-    history.goBack()
     window.location.reload()
+    history.goBack()
   }
 
   const loginForm = () => (
