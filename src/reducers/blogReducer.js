@@ -31,23 +31,11 @@ export const deleteBlog = (id) => {
 }
 
 
-export const likeBlog = (blog) => {
+export const updateBlog = (blog) => {
   return async dispatch => {
-    const returnedContent = await blogService.update(
-      blog.id, { ...blog, likes: blog.likes + 1 })
+    const returnedContent = await blogService.update(blog)
     dispatch({
-      type: 'LIKE_BLOG',
-      data: returnedContent
-    })
-  }
-}
-
-
-export const commentBlog = (blog) => {
-  return async dispatch => {
-    const returnedContent = await blogService.comment(blog.id, blog)
-    dispatch({
-      type: 'COMMENT_BLOG',
+      type: 'UPDATE_BLOG',
       data: returnedContent
     })
   }
@@ -72,13 +60,9 @@ const blogReducer = (state = [], action) => {
     return [...state, action.data]
   case 'DELETE_BLOG':
     return [...state, action.data]
-  case 'LIKE_BLOG':
+  case 'UPDATE_BLOG':
     return state.map(blog =>
       blog.id !== action.data.id ? blog : changedBlog(state, action.data.id, action.data.likes)
-    )
-  case 'COMMENT_BLOG':
-    return state.map(blog =>
-      blog.id !== action.data.id ? blog : changedBlog(state, action.data.id, action.data.comments)
     )
   default:
     return state

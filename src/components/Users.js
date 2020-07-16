@@ -6,7 +6,9 @@ import { deleteUser } from '../reducers/userReducer'
 import { setMessage } from '../reducers/messageReducer'
 
 const Users = (props) => {
-  console.log('Users',props)
+
+  const Scroll = require('react-scroll')
+  const scroller = Scroll.animateScroll
   const hideOrShow = { display: props.visible ? 'none' : '' }
 
   const usertable = () => (
@@ -22,6 +24,7 @@ const Users = (props) => {
               <Link
                 to={`/users/${user.id}`}
                 onClick={() => {
+                  scroller.scrollToTop()
                   props.setVisible(true)
                   props.history.push('/users')
                 }}

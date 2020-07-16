@@ -1,19 +1,26 @@
 import React, { useState } from 'react'
 import { useField } from '../hooks'
 import { useDispatch } from 'react-redux'
-import { initializeBlogs, createBlog } from '../reducers/blogReducer'
-import { setMessage } from '../reducers/messageReducer'
-
 
 const BlogForm = (props) => {
   const dispatch = useDispatch()
+  const Scroll = require('react-scroll')
+  const scroller = Scroll.animateScroll
 
-  const [ form, setForm ] = useState(true)
-  const ShowOrhide = { display: props.visible ? '' : 'none' }
+  const [ form, setForm ] = useState(props.listVisible)
+  const ShowOrhide = { display: props.listVisible ? '' : 'none' }
 
   const newTitle = useField(form)
   const newAuthor = useField(form)
   const newUrl = useField(form)
+
+  const handleReset = (event) => {
+    event.preventDefault()
+    newTitle.onReset(event)
+    newAuthor.onReset(event)
+    newUrl.onReset(event)
+    scroller.scrollToTop()
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -27,15 +34,21 @@ const BlogForm = (props) => {
     }
 
     try {
-      dispatch(createBlog(newBlog))
-      dispatch(setMessage(`added \`${newTitle.value}\``,'msg',5))
+      dispatch(props.createBlog(newBlog))
+      props.setMessage(`added \`${newTitle.value}\``,'msg',5)
     } catch (exception) {
-      dispatch(setMessage(`error: \`${exception}\``,'err',5))
+      props.setMessage(`error: \`${exception}\``,'err',5)
     }
 
-    dispatch(initializeBlogs())
-    props.setVisible(!props.visible)
+    props.initializeBlogs()
+    props.setListVisible(!props.listVisible)
     props.history.goBack()
+    scroller.scrollToTop()
+  }
+
+  const styling = {
+    float: 'left',
+    marginTop: '12px'
   }
 
   return (
@@ -57,23 +70,20 @@ const BlogForm = (props) => {
         </div>
         <div align='left' className='form-group'>
           <button className='btn btn-primary' id='add-button' type='submit'
-            style={{ float: 'left', marginTop: '12px' }}
+            style={styling}
             onClick={handleSubmit}>
             add
           </button>
-          <button className='btn btn-primary' id='reset-button' type='submit'
-            style={{ float: 'left', marginTop: '12px' }}
-            onClick={() => {
-              setForm(false)
-            }}>
+          <button className='btn btn-primary' id='reset-button' type='button'
+            style={styling} onClick={handleReset} >
             reset
           </button>
         </div>
         <div align='right' className='form-group'>
           <button className='btn btn-primary' id='formback-button' type='button'
             onClick={() => {
+              props.setListVisible(!props.listVisible)
               props.history.goBack()
-              props.setVisible(!props.visible)
             }}
             props={{
               ...props,

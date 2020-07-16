@@ -15,7 +15,6 @@ const User = ({ props }) => {
     return blog.user.name === user.name
       ? blog : null
   }).filter(blog => !!blog)
-  console.log('One User',userBlogs)
 
   return(
     <div className='col-auto' style={ShowOrhide}>
@@ -25,6 +24,15 @@ const User = ({ props }) => {
         {userBlogs.length > 0
           ? <>
             <b>added blogs</b>
+            <button type='button' className='btn btn-primary' id='back-button'
+              onClick={() => {
+                props.history.goBack()
+                props.setVisible(!props.visible)
+              }}
+              props={{
+                ...props,
+              }} >back
+            </button>
             <div className='col-auto'>
               <ul>
                 {userBlogs.map(blog =>
@@ -35,18 +43,20 @@ const User = ({ props }) => {
               </ul>
             </div>
           </>
-          : <b>no added blogs</b>
+          : <>
+            <b>no added blogs</b>
+            <button type='button' className='btn btn-primary' id='back-button'
+              onClick={() => {
+                props.history.goBack()
+                props.setVisible(!props.visible)
+              }}
+              props={{
+                ...props,
+              }} >back
+            </button>
+          </>
         }
       </div>
-      <button type='button' className='btn btn-primary'
-        onClick={() => {
-          props.history.goBack()
-          props.setVisible(!props.visible)
-        }}
-        props={{
-          ...props,
-        }} >back
-      </button>
     </div>
   )
 }

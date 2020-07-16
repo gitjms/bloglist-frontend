@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Switch, Route, Link, useHistory } from 'react-router-dom'
+import { Switch, Route, Link, useHistory, Redirect } from 'react-router-dom'
 
-import { initializeBlogs  } from './reducers/blogReducer'
-import { initializeUsers  } from './reducers/userReducer'
-import { useDispatch, useSelector, connect } from 'react-redux'
+import { initializeBlogs } from './reducers/blogReducer'
+import { initializeUsers } from './reducers/userReducer'
+import { useDispatch, useSelector } from 'react-redux'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
 
 import LoginForm from './components/LoginForm'
-import BlogForm from './components/BlogForm'
 
 import Blogs from './components/Blogs'
 import Users from './components/Users'
@@ -62,8 +61,9 @@ const App = () => {
       dispatch(setLoggedUser(null))
       window.localStorage.clear()
     } catch (exception) {
-      dispatch(setMessage(`${exception}`,'err',5))
+      dispatch(setMessage(exception,'err',5))
     }
+    history.goBack()
     window.location.reload()
   }
 
@@ -71,16 +71,6 @@ const App = () => {
     <Togglable buttonLabel='sign in' ref={loginFormRef}>
       <LoginForm loginUser={handleLogin} />
     </Togglable>
-  )
-
-  const blogForm = () => (
-    <Link to={'/create'}
-      onClick={() => {
-        setVisible(true)
-        history.push('/blogs')
-      }}
-    >CREATE NEW
-    </Link>
   )
 
   const user = (
@@ -120,21 +110,12 @@ const App = () => {
       <div className='container'>
         <Message />
         <Switch>
-          <Route path='/create'>
-            <BlogForm
-              user={user}
-              visible={true}
-              history={history}
-              setVisible={setVisible}
-            />
-          </Route>
           <Route path='/blogs'>
             {user !== null
               ? <Blogs
                 user={user}
                 visible={visible}
                 history={history}
-                blogForm={blogForm}
                 setVisible={setVisible}
                 setMessage={setMessage}
               />
@@ -160,12 +141,4 @@ const App = () => {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    user: state.loggedUser
-  }
-}
-
-export default connect(
-  mapStateToProps
-)(App)
+export default App

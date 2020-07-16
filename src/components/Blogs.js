@@ -3,10 +3,14 @@ import { Switch, Route, Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import Filter from './Filter'
 import Blog from './Blog'
-import { likeBlog, deleteBlog } from '../reducers/blogReducer'
+import BlogForm from './BlogForm'
+import { updateBlog, deleteBlog, createBlog, initializeBlogs } from '../reducers/blogReducer'
 import { setMessage } from '../reducers/messageReducer'
 
 const Blogs = (props) => {
+
+  const Scroll = require('react-scroll')
+  const scroller = Scroll.animateScroll
 
   const [ listVisible, setListVisible ] = useState(props.visible)
   const hideOrShow = { display: listVisible ? 'none' : '' }
@@ -17,9 +21,9 @@ const Blogs = (props) => {
         {props.blogs.map(blog =>
           <tr key={blog.id}>
             <td>
-              <Link
-                to={`/blogs/${blog.id}`}
+              <Link to={`/blogs/${blog.id}`}
                 onClick={() => {
+                  scroller.scrollToTop()
                   setListVisible(!listVisible)
                   props.history.push('/blogs')
                 }}
@@ -32,6 +36,17 @@ const Blogs = (props) => {
     </table>
   )
 
+  const blogForm = () => (
+    <Link to={'/blogs/create'}
+      onClick={() => {
+        scroller.scrollToTop()
+        setListVisible(!listVisible)
+        props.history.push('/blogs')
+      }}
+    >CREATE NEW
+    </Link>
+  )
+
   return (
     <>
       <div style={hideOrShow}>
@@ -40,7 +55,7 @@ const Blogs = (props) => {
         <h2>Blogs</h2>
         <div>
           {props.user !== null
-            ? props.blogForm()
+            ? blogForm()
             : null
           }
         </div>
@@ -51,12 +66,24 @@ const Blogs = (props) => {
       </div>
 
       <Switch>
+        <Route path='/blogs/create'>
+          <BlogForm
+            user={props.user}
+            listVisible={listVisible}
+            setListVisible={setListVisible}
+            createBlog={createBlog}
+            initializeBlogs={initializeBlogs}
+            history={props.history}
+            setMessage={props.setMessage}
+          />
+        </Route>
         <Route path='/blogs/:id'>
           <Blog
             props={{
               ...props,
               listVisible: listVisible,
               setListVisible: setListVisible,
+              initializeBlogs: initializeBlogs,
               history: props.history,
               setMessage: props.setMessage
             }}
@@ -82,8 +109,9 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = {
-  likeBlog,
+  updateBlog,
   deleteBlog,
+  initializeBlogs,
   setMessage
 }
 

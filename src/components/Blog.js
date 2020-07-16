@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { useParams, Switch, Route, Link } from 'react-router-dom'
-import { initializeBlogs } from '../reducers/blogReducer'
+import { useParams } from 'react-router-dom'
 import CommentForm from './CommentForm'
 
 const Blog = ({ props }) => {
   const id = useParams().id
-  const dispatch = useDispatch()
+  const Scroll = require('react-scroll')
+  const scroller = Scroll.animateScroll
 
   const [ blogVisible, setBlogVisible ] = useState(!props.listVisible)
   const ShowOrhide = { display: blogVisible ? 'none' : '' }
@@ -17,82 +16,90 @@ const Blog = ({ props }) => {
   }
 
   const commentForm = () => (
-    <Link to={`/blogs/${blog.id}/comments`}
-      onClick={() => {
-        setBlogVisible(!blogVisible)
-        props.history.push(`/blogs/${blog.id}`)
-      }}
-    >ADD NEW COMMENT
-    </Link>
+    <CommentForm
+      blog={blog}
+      updateBlog={props.updateBlog}
+      history={props.history}
+      initializeBlogs={props.initializeBlogs}
+      setMessage={props.setMessage}
+      props={props}
+    />
   )
 
+  const padding = {
+    padding: '5px'
+  }
+
+  const size = {
+    fontSize: '20px'
+  }
+
   return(
-    <>
-      <div style={ShowOrhide}>
-        <br />
-        <b id='b-left'>{blog.title}</b>by<b id='b-right'>{blog.author}</b>
-        <br /><br />
-        <a href={blog.url}>{blog.url}</a>
-        <br />
-        {blog.likes} likes
-        <button type='button' className='btn btn-success' id='like-button'
-          onClick={() => {
-            props.likeBlog({ ...blog, user: blog.user.id })
+    <div style={ShowOrhide}>
+      <br />
+      <b style={size}>{blog.title}</b>
+      <span style={padding}></span>
+      by
+      <span style={padding}></span>
+      <b style={size}>{blog.author}</b>
+      <br /><br />
+      <a href={blog.url}>{blog.url}</a>
+      <br />
+      {blog.likes} likes
+      <button type='button' className='btn btn-success' id='like-button'
+        onClick={() => {
+          try {
+            props.updateBlog({ ...blog, likes: blog.likes + 1, user: blog.user.id })
+            scroller.scrollToTop()
             props.setMessage(`you liked '${blog.title}'`,'msg',5)
-          }}>like</button>
-        <br />
-        added by {blog.user.name}
-        { props.user.name === blog.user.name &&
-          <button type='button' id='delete-button' className='btn btn-warning'
-            onClick={() => {
-              props.history.goBack()
-              props.deleteBlog(id)
-              props.setMessage(`you deleted '${blog.title}'`,'msg',5)
-              dispatch(initializeBlogs())
-              setBlogVisible(!blogVisible)
-              props.setListVisible(!props.listVisible)
-            }}>delete</button>
-        }
-        <button type='button' id='back-button' className='btn btn-primary'
+          } catch (exception) {
+            props.setMessage(exception,'err',10)
+          }
+        }}>like</button>
+      <br />
+      added by {blog.user.name}
+      { props.user.name === blog.user.name &&
+        <button type='button' id='delete-button' className='btn btn-warning'
           onClick={() => {
             props.history.goBack()
+            try {
+              props.deleteBlog(id)
+              scroller.scrollToTop()
+              props.setMessage(`you deleted '${blog.title}'`,'msg',5)
+            } catch (exception) {
+              props.setMessage(exception,'err',10)
+            }
+            props.initializeBlogs()
             setBlogVisible(!blogVisible)
             props.setListVisible(!props.listVisible)
-          }}
-          props={{
-            ...props,
-          }} > go back
-        </button>
-        <br />
-        {commentForm()}
-        <br />
-        {blog.comments}
-        {/* { blog.comments !== null &&
-          <>
-            <b>Comments</b>
+          }}>delete</button>
+      }
+      <button type='button' id='back-button' className='btn btn-primary'
+        onClick={() => {
+          props.history.goBack()
+          scroller.scrollToTop()
+          setBlogVisible(!blogVisible)
+          props.setListVisible(!props.listVisible)
+        }}
+        props={{
+          ...props,
+        }} > go back
+      </button>
+      <br /><br />
+      <b>Comments</b>
+      {commentForm()}
+      { blog.comments.length > 0 &&
+        <div className='col-auto'>
+          <ul>
             {blog.comments.map(comment =>
               <li key={comment}>
                 {comment}
               </li>
             )}
-          </>
-        } */}
-      </div>
-
-      <Switch>
-        <Route path='/blogs/:id/comments'>
-          <CommentForm
-            blog={blog}
-            commentForm={commentForm}
-            blogVisible={blogVisible}
-            history={props.history}
-            setBlogVisible={setBlogVisible}
-            setMessage={props.setMessage}
-            props={{ ...props }}
-          />
-        </Route>
-      </Switch>
-    </>
+          </ul>
+        </div>
+      }
+    </div>
   )
 }
 

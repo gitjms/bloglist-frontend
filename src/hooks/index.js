@@ -9,8 +9,13 @@ export const useField = (form) => {
       : setValue('')
   }
 
+  const onReset = () => {
+    setValue('')
+  }
+
   return {
     value,
-    onChange
+    onChange,
+    onReset
   }
 }

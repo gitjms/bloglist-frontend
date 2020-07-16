@@ -6,16 +6,6 @@ th {
   padding-left: 30px;
 }
 
-#b-left {
-  font-size: 25px;
-  padding-right: 0px;
-}
-
-#b-right {
-  font-size: 25px;
-  padding-left: 20px;
-}
-
 #like-button,#delete-button,#back-button {
   padding-top: 7px;
 }
@@ -28,26 +18,12 @@ th {
   font-size: medium;
 }
 
-.form-inline {
-  margin-left: 5px;
-}
-
-input {
-  margin-left: 5px;
-}
-
 #username,#password {
   width: 120px;
 }
 
-#boxed {
-  width: 500px;
-  border: 1.5px solid #d1d1d1;
-  padding-bottom: 10px;
-}
-
 ul {
-  padding-left: 0px;
+  padding-left: 10px;
 }
 
 #big-list {
@@ -60,6 +36,10 @@ ul {
 #small-list {
   padding-top: 0px;
   padding-bottom: 0px;
+}
+
+#loginput {
+  padding-left: 10px;
 }
 
 body {

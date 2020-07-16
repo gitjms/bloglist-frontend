@@ -25,9 +25,9 @@ const LoginForm = ({ loginUser }) => {
       <form>
         <div align='left' className='form-group-inline'>
           <label id='formlabel'>username:</label>
-          <input className='form-control' {...newUsername} />
+          <input id='loginput' className='form-control' {...newUsername} />
           <label id='formlabel'>password:</label>
-          <input className='form-control' {...newPassword} />
+          <input id='loginput' className='form-control' {...newPassword} />
         </div>
         <button className='btn btn-primary' id='login-button' type='button'
           style={{ float: 'left' }}

@@ -1,78 +1,53 @@
 import React, { useState } from 'react'
 import { useField } from '../hooks'
-import { useDispatch } from 'react-redux'
-import { initializeBlogs, commentBlog } from '../reducers/blogReducer'
-import { setMessage } from '../reducers/messageReducer'
-
 
 const CommentForm = (props) => {
-  const dispatch = useDispatch()
+  const Scroll = require('react-scroll')
+  const scroller = Scroll.animateScroll
 
-  const [ form, setForm ] = useState(true)
-  const [ commentVisible, setCommentVisible ] = useState(props.blogVisible)
-  const ShowOrhide = { display: commentVisible ? '' : 'none' }
+  const [ form, setForm ] = useState(!props.listVisible)
 
-  const newContent = useField(form)
+  const newComment = useField(form)
+
+  const handleReset = (event) => {
+    event.preventDefault()
+    newComment.onReset(event)
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault()
     setForm(true)
 
-    const commentedBlog = {
-      ...props.blog,
-      comments: newContent.value
-    }
-    console.log(commentedBlog)
+    props.blog.comments.push(newComment.value)
 
     try {
-      dispatch(commentBlog(commentedBlog))
-      dispatch(setMessage(`added comment\`${newContent.value}\``,'msg',5))
+      props.updateBlog({
+        ...props.blog,
+        comments: props.blog.comments,
+        user: props.blog.user.id
+      })
+      props.setMessage(`added comment '${newComment.value}'`,'msg',5)
     } catch (exception) {
-      dispatch(setMessage(`error: \`${exception}\``,'err',5))
+      props.setMessage(exception,'err',10)
     }
 
-    dispatch(initializeBlogs())
-    props.setBlogVisible(!props.visible)
-    setCommentVisible(!commentVisible)
-    props.history.goBack()
+    scroller.scrollToTop()
+    handleReset(event)
+    props.initializeBlogs()
+  }
+
+  const size = {
+    width: '400px',
+    marginBottom: '10px'
   }
 
   return (
-    <div className='col-auto' style={ShowOrhide}>
-      <br />
-      <b>Add a new Comment</b>
-      <form>
-        <div align='left' className='form-group'>
-          <label id='formlabel'>comment:</label>
-          <input className='form-control' {...newContent} />
-        </div>
-        <div align='left' className='form-group'>
-          <button className='btn btn-primary' id='add-button' type='submit'
-            style={{ float: 'left', marginTop: '12px' }}
-            onClick={handleSubmit}>
-            add
-          </button>
-          <button className='btn btn-primary' id='reset-button' type='submit'
-            style={{ float: 'left', marginTop: '12px' }}
-            onClick={() => {
-              setForm(false)
-            }}>
-            reset
-          </button>
-        </div>
-        <div align='right' className='form-group'>
-          <button className='btn btn-primary' id='formback-button' type='button'
-            onClick={() => {
-              props.history.goBack()
-              setCommentVisible(!commentVisible)
-              props.setBlogVisible(!props.blogVisible)
-            }}
-            props={{
-              ...props,
-            }} >back
-          </button>
-        </div>
-      </form>
+    <div className='input-group' style={size}>
+      <input className='form-control' {...newComment} placeholder='comment here...' />
+      <button className='btn btn-primary' type='submit'
+        onClick={handleSubmit}>
+        add comment
+      </button>
     </div>
   )
 }
