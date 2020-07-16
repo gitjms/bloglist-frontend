@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Switch, Route, Link, useHistory, Redirect } from 'react-router-dom'
+import { Switch, Route, Link, useHistory } from 'react-router-dom'
 
 import { initializeBlogs } from './reducers/blogReducer'
 import { initializeUsers } from './reducers/userReducer'
