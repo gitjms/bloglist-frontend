@@ -85,7 +85,7 @@ const App = () => {
     <>
       <nav id='nav' className='navbar navbar-light bg-light'>
         {/* <img src='/logo.png' width='50' height='35' className='d-inline-block align-top' alt=''/> */}
-        <a className="navbar-brand" href="/"><strong>Bloglist</strong></a>
+        <a className="navbar-brand" href='/'><strong>Bloglist</strong></a>
 
         {user !== null ?
           <>
