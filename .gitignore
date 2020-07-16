@@ -5,9 +5,11 @@
 /build
 
 # misc
+.vscode
 .DS_Store
 .env
 npm-project.txt
+package-lock.json
 serviceWorker.js
 setupTests.js
 
